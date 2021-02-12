@@ -27,7 +27,6 @@ public class MazeTest {
     public void testReadInput() {
         ByteArrayInputStream in = new ByteArrayInputStream("3 4 1 0 1 1 0 1 0 0 1 0 0 1 2 1".getBytes());
         System.setIn(in);
-        maze = new MazeSolver();
         maze.readInput();
         assertEquals(maze.matrix.length, 3);
         assertEquals(maze.matrix[0].length, 4);
@@ -39,7 +38,6 @@ public class MazeTest {
     public void testReadInputZeroInput() {
         ByteArrayInputStream in = new ByteArrayInputStream("0 0 0 0".getBytes());
         System.setIn(in);
-        maze = new MazeSolver();
         assertThrows(IllegalArgumentException.class, () -> maze.readInput());
     }
 
@@ -47,7 +45,6 @@ public class MazeTest {
     public void testReadInputWrongMatrixContent() {
         ByteArrayInputStream in = new ByteArrayInputStream("2 2 1 2 3 4 0 1".getBytes());
         System.setIn(in);
-        maze = new MazeSolver();
         assertThrows(IllegalArgumentException.class, () -> maze.readInput());
     }
 
@@ -55,7 +52,6 @@ public class MazeTest {
     public void testReadInputStartingPointOutOfBounds() {
         ByteArrayInputStream in = new ByteArrayInputStream("2 2 0 0 1 1 3 2".getBytes());
         System.setIn(in);
-        maze = new MazeSolver();
         assertThrows(IllegalArgumentException.class, () -> maze.readInput());
     }
 
@@ -63,7 +59,6 @@ public class MazeTest {
     public void testReadInputStartingPointEqualsOne() {
         ByteArrayInputStream in = new ByteArrayInputStream("2 2 1 1 1 1 0 1".getBytes());
         System.setIn(in);
-        maze = new MazeSolver();
         assertThrows(IllegalArgumentException.class, () -> maze.readInput());
     }
 
