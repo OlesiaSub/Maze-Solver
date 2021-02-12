@@ -10,10 +10,10 @@ public class MazeSolver implements Maze {
         public int sndPos;
         public boolean terminal;
 
-        public Vertex(int idx, int i, int j, boolean term) {
+        public Vertex(int idx, int first, int second, boolean term) {
             index = idx;
-            fstPos = i;
-            sndPos = j;
+            fstPos = first;
+            sndPos = second;
             terminal = term;
         }
     }
@@ -22,23 +22,25 @@ public class MazeSolver implements Maze {
         public int fst;
         public int snd;
 
-        public IndexPair(int x, int y) {
-            fst = x;
-            snd = y;
+        public IndexPair(int first, int second) {
+            fst = first;
+            snd = second;
         }
     }
 
     public int[][] matrix;
     public int[] parents;
     public boolean[] used;
-    public final ArrayList<Integer> terminals = new ArrayList<>();
-    public final ArrayList<ArrayList<Integer>> edges = new ArrayList<>();
-    public ArrayList<IndexPair> path = new ArrayList<>();
-    public final Map<Integer, Vertex> verticesStorageIdx = new HashMap<>();
-    public int[][] verticesStorageCoordsArray;
+
     public IndexPair startPos;
     public Integer startIdx;
     public Integer curIndex = 0;
+
+    public final ArrayList<Integer> terminals = new ArrayList<>();
+    public final ArrayList<ArrayList<Integer>> edges = new ArrayList<>();
+    public ArrayList<IndexPair> path = new ArrayList<>();
+    public final Map<Integer, Vertex> verticesIndices = new HashMap<>();
+    public int[][] verticesCoordinates;
 
     @Override
     public void readInput() throws IllegalArgumentException {
@@ -72,13 +74,13 @@ public class MazeSolver implements Maze {
         matrix = new int[n][m];
         used = new boolean[n * m];
         parents = new int[n * m];
-        verticesStorageCoordsArray = new int[n][m];
+        verticesCoordinates = new int[n][m];
         for (int i = 0; i < n * m; i++) {
             edges.add(new ArrayList<>());
         }
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
-                verticesStorageCoordsArray[i][j] = -1;
+                verticesCoordinates[i][j] = -1;
             }
         }
     }
@@ -89,8 +91,8 @@ public class MazeSolver implements Maze {
                 if (matrix[i][j] == 0) {
                     boolean terminal = i == 0 || i == matrix.length - 1 || j == matrix[0].length - 1 || j == 0;
                     Vertex current = new Vertex(curIndex, i, j, terminal);
-                    verticesStorageCoordsArray[i][j] = curIndex;
-                    verticesStorageIdx.put(curIndex, current);
+                    verticesCoordinates[i][j] = curIndex;
+                    verticesIndices.put(curIndex, current);
                     curIndex++;
                 }
             }
@@ -98,9 +100,9 @@ public class MazeSolver implements Maze {
     }
 
     private void addEdges(IndexPair idx, int i) {
-        if (idx.fst >= 0 && idx.snd >= 0 && idx.fst < verticesStorageCoordsArray.length
-                && idx.snd < verticesStorageCoordsArray[0].length && verticesStorageCoordsArray[idx.fst][idx.snd] != -1) {
-            Vertex curVertex = verticesStorageIdx.get(verticesStorageCoordsArray[idx.fst][idx.snd]);
+        if (idx.fst >= 0 && idx.snd >= 0 && idx.fst < verticesCoordinates.length
+                && idx.snd < verticesCoordinates[0].length && verticesCoordinates[idx.fst][idx.snd] != -1) {
+            Vertex curVertex = verticesIndices.get(verticesCoordinates[idx.fst][idx.snd]);
             edges.get(i).add(curVertex.index);
         }
     }
@@ -109,7 +111,7 @@ public class MazeSolver implements Maze {
     public void constructGraph() {
         traverseMatrix();
         for (int i = 0; i < curIndex; i++) {
-            IndexPair current = new IndexPair(verticesStorageIdx.get(i).fstPos, verticesStorageIdx.get(i).sndPos);
+            IndexPair current = new IndexPair(verticesIndices.get(i).fstPos, verticesIndices.get(i).sndPos);
             if (current.fst == startPos.fst && current.snd == startPos.snd) {
                 startIdx = i;
             }
@@ -133,11 +135,26 @@ public class MazeSolver implements Maze {
         }
         int terminal = terminals.get(0);
         for (int i = terminal; i != startIdx; i = parents[i]) {
-            path.add(new IndexPair(verticesStorageIdx.get(i).fstPos, verticesStorageIdx.get(i).sndPos));
+            path.add(new IndexPair(verticesIndices.get(i).fstPos, verticesIndices.get(i).sndPos));
         }
-        path.add(new IndexPair(verticesStorageIdx.get(startIdx).fstPos, verticesStorageIdx.get(startIdx).sndPos));
+        path.add(new IndexPair(verticesIndices.get(startIdx).fstPos, verticesIndices.get(startIdx).sndPos));
         Collections.reverse(path);
         writeOutput();
+    }
+
+    @Override
+    public void dfs(int vertex) {
+        if (vertex != startIdx && verticesIndices.get(vertex).terminal) {
+            terminals.add(vertex);
+            return;
+        }
+        used[vertex] = true;
+        for (int i : edges.get(vertex)) {
+            if (!used[i]) {
+                dfs(i);
+                parents[i] = vertex;
+            }
+        }
     }
 
     private boolean getDirection(int i, ArrayList<IndexPair> path) {
@@ -164,26 +181,11 @@ public class MazeSolver implements Maze {
         System.out.println("}");
 
         for (int i = 0; i < path.size() - 1; i++) {
-            boolean correct = getDirection(i, path);
-            if (!correct) {
+            boolean correctDir = getDirection(i, path);
+            if (!correctDir) {
                 throw new RuntimeException("Impossible path was found.");
             }
         }
         System.out.println("Congratulations! You found the way out!");
-    }
-
-    @Override
-    public void dfs(int vertex) {
-        if (vertex != startIdx && verticesStorageIdx.get(vertex).terminal) {
-            terminals.add(vertex);
-            return;
-        }
-        used[vertex] = true;
-        for (int i : edges.get(vertex)) {
-            if (!used[i]) {
-                dfs(i);
-                parents[i] = vertex;
-            }
-        }
     }
 }

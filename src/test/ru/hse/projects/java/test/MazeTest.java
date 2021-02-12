@@ -72,15 +72,15 @@ public class MazeTest {
         constructMatrix();
         maze.traverseMatrix();
 
-        assertEquals(maze.verticesStorageCoordsArray[0][1], 0);
-        assertEquals(maze.verticesStorageCoordsArray[1][1], 1);
-        assertEquals(maze.verticesStorageCoordsArray[2][1], 2);
-        assertEquals(maze.verticesStorageCoordsArray[2][2], 3);
+        assertEquals(maze.verticesCoordinates[0][1], 0);
+        assertEquals(maze.verticesCoordinates[1][1], 1);
+        assertEquals(maze.verticesCoordinates[2][1], 2);
+        assertEquals(maze.verticesCoordinates[2][2], 3);
 
-        assertEquals(maze.verticesStorageIdx.get(1).index, 1);
-        assertEquals(maze.verticesStorageIdx.get(1).fstPos, 1);
-        assertEquals(maze.verticesStorageIdx.get(1).sndPos, 1);
-        assertFalse(maze.verticesStorageIdx.get(1).terminal);
+        assertEquals(maze.verticesIndices.get(1).index, 1);
+        assertEquals(maze.verticesIndices.get(1).fstPos, 1);
+        assertEquals(maze.verticesIndices.get(1).sndPos, 1);
+        assertFalse(maze.verticesIndices.get(1).terminal);
     }
 
     @Test
