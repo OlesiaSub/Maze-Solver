@@ -31,6 +31,7 @@ public class MazeSolver implements Maze {
     public int[][] matrix;
     public int[] parents;
     public boolean[] used;
+    public int[][] verticesCoordinates;
 
     public IndexPair startPos;
     public Integer startIdx;
@@ -40,7 +41,6 @@ public class MazeSolver implements Maze {
     public final ArrayList<ArrayList<Integer>> edges = new ArrayList<>();
     public ArrayList<IndexPair> path = new ArrayList<>();
     public final Map<Integer, Vertex> verticesIndices = new HashMap<>();
-    public int[][] verticesCoordinates;
 
     @Override
     public void readInput() throws IllegalArgumentException {
