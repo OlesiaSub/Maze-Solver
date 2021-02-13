@@ -86,10 +86,12 @@ public class MazeSolver implements Maze {
     }
 
     public void traverseMatrix() {
-        for (int i = 0; i < matrix.length; i++) {
-            for (int j = 0; j < matrix[0].length; j++) {
+        int vertDim = matrix.length;
+        int horDim = matrix[0].length;
+        for (int i = 0; i < vertDim; i++) {
+            for (int j = 0; j < horDim; j++) {
                 if (matrix[i][j] == 0) {
-                    boolean terminal = i == 0 || i == matrix.length - 1 || j == matrix[0].length - 1 || j == 0;
+                    boolean terminal = i == 0 || i ==vertDim - 1 || j == horDim - 1 || j == 0;
                     Vertex current = new Vertex(curIndex, i, j, terminal);
                     verticesCoordinates[i][j] = curIndex;
                     verticesIndices.put(curIndex, current);
