@@ -43,7 +43,7 @@ public class MazeSolver implements Maze {
     public final Map<Integer, Vertex> verticesIndices = new HashMap<>();
 
     @Override
-    public void readInput() throws IllegalArgumentException {
+    public void readInput() {
         Scanner scan = new Scanner(System.in);
         int n = scan.nextInt();
         int m = scan.nextInt();
@@ -175,7 +175,7 @@ public class MazeSolver implements Maze {
     }
 
     @Override
-    public void writeOutput() throws IllegalArgumentException {
+    public void writeOutput() {
         System.out.print("Your starting point is {");
         System.out.print(startPos.fst);
         System.out.print("; ");
